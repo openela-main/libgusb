@@ -1,10 +1,13 @@
 Summary:   GLib wrapper around libusb1
 Name:      libgusb
 Version:   0.3.8
-Release:   1%{?dist}
+Release:   2%{?dist}
 License:   LGPLv2+
 URL:       https://github.com/hughsie/libgusb
 Source0:   http://people.freedesktop.org/~hughsient/releases/%{name}-%{version}.tar.xz
+
+# backport from upstream
+Patch0:    idle-events-mutex.patch
 
 BuildRequires: glib2-devel >= 2.38.0
 BuildRequires: gobject-introspection-devel
@@ -26,7 +29,7 @@ Requires: %{name} = %{version}-%{release}
 GLib headers and libraries for gusb.
 
 %prep
-%setup -q
+%autosetup -p1
 
 %build
 %meson -Dvapi=true -Dtests=true
@@ -55,6 +58,10 @@ GLib headers and libraries for gusb.
 %{_datadir}/vala/vapi/gusb.vapi
 
 %changelog
+* Mon Jul 31 2023 Richard Hughes <richard@hughsie.com> 0.3.8-2
+- Backport a patch to fix a rare multithreaded crash on device replug
+- Resolves: rhbz#2227760
+
 * Wed Oct 06 2021 Richard Hughes <richard@hughsie.com> 0.3.8-1
 - New upstream version
 - Add new API requested by fwupd
